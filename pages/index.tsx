@@ -2,6 +2,9 @@ import type { GetServerSideProps, NextPage } from "next";
 import { Fragment, createElement } from "react";
 import Head from "next/head";
 import Image from "next/image";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+
 import { getList } from "../lib/microcms";
 import styles from "../styles/Home.module.css";
 
@@ -14,6 +17,7 @@ import { CustomH3 } from "../components/CustomH3";
 import { CustomTh } from "../components/CutomTh";
 import { CustomTd } from "../components/CustomTd";
 import { CustomTable } from "../components/CustomTable";
+import { useForm } from "react-hook-form";
 
 const parseHtml = (content: string) => {
   const htmlAst = unified()
@@ -34,7 +38,20 @@ const parseHtml = (content: string) => {
   return htmlAst;
 };
 
+// Yup
+const schema = yup.object().shape({
+  email: yup.string().email("有効なメールアドレスを入力してください"),
+  password: yup.string().required("パスワードを入力してください"),
+});
+type Form = yup.InferType<typeof schema>;
+
 const Home: NextPage = ({ data }) => {
+  const { register, handleSubmit } = useForm<Form>({
+    resolver: yupResolver(schema),
+  });
+  const onSubmit = (submitData) => {
+    console.log(submitData);
+  };
   return (
     <div className={styles.container}>
       <Head>
@@ -103,17 +120,48 @@ const Home: NextPage = ({ data }) => {
                   }}
                 >
                   <h2>ショップ用のフォーム</h2>
-                  <label>ラベル</label>
-                  <br />
-                  <input type="text" />
-                  <br />
-                  <label>ラベル</label>
-                  <br />
-                  <input type="text" />
-                  <br />
-                  <label>ラベル</label>
-                  <br />
-                  <input type="text" />
+                  <form onSubmit={handleSubmit(onSubmit)}>
+                    <div>
+                      <label htmlFor="email">e-mail</label>
+                      <input id="email" {...register("email")} />
+                    </div>
+                    <div>
+                      <label htmlFor="password">Password</label>
+                      <input
+                        id="password"
+                        {...register("password")}
+                        type="password"
+                      />
+                    </div>
+                    <button type="submit">送信</button>
+                  </form>
+                </section>
+              )}
+            {content.fieldId === "formList" &&
+              content.form[0] === "satei-form" && (
+                <section
+                  style={{
+                    border: "solid lightgreen 5px",
+                    padding: "10px 20px",
+                    margin: "30px 0",
+                  }}
+                >
+                  <h2>査定用のフォーム</h2>
+                  <form onSubmit={handleSubmit(onSubmit)}>
+                    <div>
+                      <label htmlFor="email">e-mail</label>
+                      <input id="email" {...register("email")} />
+                    </div>
+                    <div>
+                      <label htmlFor="password">Password</label>
+                      <input
+                        id="password"
+                        {...register("password")}
+                        type="password"
+                      />
+                    </div>
+                    <button type="submit">送信</button>
+                  </form>
                 </section>
               )}
             {content.fieldId === "tables" && (
@@ -149,6 +197,12 @@ const Home: NextPage = ({ data }) => {
               >
                 <h2>{content.h2Title}</h2>
                 {parseHtml(content.FaqField)}
+              </section>
+            )}
+            {content.fieldId === "htmlField" && (
+              <section>
+                <h2>テーブル(結合)のフィールド</h2>
+                {parseHtml(content.htmlField)}
               </section>
             )}
           </>
