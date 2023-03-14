@@ -1,14 +1,16 @@
-import type { GetServerSideProps, NextPage } from 'next'
+import type { GetServerSideProps, NextPage } from "next";
 import { Fragment, createElement } from "react";
-import Head from 'next/head'
-import Image from 'next/image'
-import { getList } from '../lib/microcms'
-import styles from '../styles/Home.module.css'
+import Head from "next/head";
+import Image from "next/image";
+import { getList } from "../lib/microcms";
+import styles from "../styles/Home.module.css";
 
 import { unified } from "unified";
 import parse from "rehype-parse";
 import rehypeReact from "rehype-react";
-import { CustomParagraph } from '../components/CustomPragraph';
+import { CustomParagraph } from "../components/CustomPragraph";
+import { CustomH2 } from "../components/CustomH2";
+import { CustomH3 } from "../components/CustomH3";
 
 const parseHtml = (content: string) => {
   const htmlAst = unified()
@@ -18,7 +20,8 @@ const parseHtml = (content: string) => {
       Fragment,
       components: {
         p: (props) => <CustomParagraph {...props} />,
-        // a: (props) => <CustomLink {...props} />,
+        h2: (props) => <CustomH2 {...props} />,
+        h3: (props) => <CustomH3 {...props} />,
       },
     })
     .processSync(content).result;
@@ -39,13 +42,38 @@ const Home: NextPage = ({ data }) => {
         <section style={{ border: "solid blue 5px", padding: "0 20px" }}>
           <h2>ヘッダーバナーフィールド</h2>
           <h2>{data.carInsurance.title}</h2>
-          <Image src={data.carInsurance.bgImage.url} height={data.carInsurance.bgImage.height} width={data.carInsurance.bgImage.width} />
+          <Image
+            src={data.carInsurance.bgImage.url}
+            height={data.carInsurance.bgImage.height}
+            width={data.carInsurance.bgImage.width}
+          />
           <p>{data.carInsurance.bodyText}</p>
         </section>
-        <section style={{ border: "solid green 5px", padding: "0 20px", margin: "30px 0" }}>
+        <section
+          style={{
+            border: "solid green 5px",
+            padding: "0 20px",
+            margin: "30px 0",
+          }}
+        >
           <h2>目次のフィールド</h2>
           {parseHtml(data.contentIndex.textList)}
         </section>
+        {data.articleArea.map((content, index) => (
+          <>
+            {content.fieldId === "sentence-field" && (
+              <section
+                style={{
+                  border: "solid red 5px",
+                  padding: "0 20px",
+                  margin: "30px 0",
+                }}
+              >
+                {parseHtml(content.sentence)}
+              </section>
+            )}
+          </>
+        ))}
       </main>
 
       <footer className={styles.footer}>
@@ -54,19 +82,19 @@ const Home: NextPage = ({ data }) => {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Powered by{' '}
+          Powered by{" "}
           <span className={styles.logo}>
             <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
           </span>
         </a>
       </footer>
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const data = await getList();
   return { props: { data: data } };
-}
+};
