@@ -1,9 +1,31 @@
-import type { NextPage } from 'next'
+import type { GetServerSideProps, NextPage } from 'next'
+import { Fragment, createElement } from "react";
 import Head from 'next/head'
 import Image from 'next/image'
+import { getList } from '../lib/microcms'
 import styles from '../styles/Home.module.css'
 
-const Home: NextPage = () => {
+import { unified } from "unified";
+import parse from "rehype-parse";
+import rehypeReact from "rehype-react";
+import { CustomParagraph } from '../components/CustomPragraph';
+
+const parseHtml = (content: string) => {
+  const htmlAst = unified()
+    .use(parse, { fragment: true })
+    .use(rehypeReact, {
+      createElement,
+      Fragment,
+      components: {
+        p: (props) => <CustomParagraph {...props} />,
+        // a: (props) => <CustomLink {...props} />,
+      },
+    })
+    .processSync(content).result;
+  return htmlAst;
+};
+
+const Home: NextPage = ({ data }) => {
   return (
     <div className={styles.container}>
       <Head>
@@ -13,44 +35,17 @@ const Home: NextPage = () => {
       </Head>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
+        <h1>タイトル</h1>
+        <section style={{ border: "solid blue 5px", padding: "0 20px" }}>
+          <h2>ヘッダーバナーフィールド</h2>
+          <h2>{data.carInsurance.title}</h2>
+          <Image src={data.carInsurance.bgImage.url} height={data.carInsurance.bgImage.height} width={data.carInsurance.bgImage.width} />
+          <p>{data.carInsurance.bodyText}</p>
+        </section>
+        <section style={{ border: "solid green 5px", padding: "0 20px", margin: "30px 0" }}>
+          <h2>目次のフィールド</h2>
+          {parseHtml(data.contentIndex.textList)}
+        </section>
       </main>
 
       <footer className={styles.footer}>
@@ -70,3 +65,8 @@ const Home: NextPage = () => {
 }
 
 export default Home
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const data = await getList();
+  return { props: { data: data } };
+}
