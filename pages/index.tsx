@@ -11,6 +11,9 @@ import rehypeReact from "rehype-react";
 import { CustomParagraph } from "../components/CustomPragraph";
 import { CustomH2 } from "../components/CustomH2";
 import { CustomH3 } from "../components/CustomH3";
+import { CustomTh } from "../components/CutomTh";
+import { CustomTd } from "../components/CustomTd";
+import { CustomTable } from "../components/CustomTable";
 
 const parseHtml = (content: string) => {
   const htmlAst = unified()
@@ -22,6 +25,9 @@ const parseHtml = (content: string) => {
         p: (props) => <CustomParagraph {...props} />,
         h2: (props) => <CustomH2 {...props} />,
         h3: (props) => <CustomH3 {...props} />,
+        table: (props) => <CustomTable {...props} />,
+        th: (props) => <CustomTh {...props} />,
+        td: (props) => <CustomTd {...props} />,
       },
     })
     .processSync(content).result;
@@ -59,6 +65,8 @@ const Home: NextPage = ({ data }) => {
           <h2>目次のフィールド</h2>
           {parseHtml(data.contentIndex.textList)}
         </section>
+        <h2>↓ ここから下が繰り返しフィールド</h2>
+        {/* ↓ 繰り返しフィールドのコンテンツ */}
         {data.articleArea.map((content, index) => (
           <>
             {content.fieldId === "sentence-field" && (
@@ -70,6 +78,77 @@ const Home: NextPage = ({ data }) => {
                 }}
               >
                 {parseHtml(content.sentence)}
+              </section>
+            )}
+            {content.fieldId === "aside-card" && (
+              <section
+                style={{
+                  border: "solid green 5px",
+                  padding: "0 20px",
+                  margin: "30px 0",
+                }}
+              >
+                <h2>{content.title}</h2>
+                <p>iconLabel: {content.iconLabel}</p>
+                {parseHtml(content.listField)}
+              </section>
+            )}
+            {content.fieldId === "formList" &&
+              content.form[0] === "shop-form" && (
+                <section
+                  style={{
+                    border: "solid yellow 5px",
+                    padding: "10px 20px",
+                    margin: "30px 0",
+                  }}
+                >
+                  <h2>ショップ用のフォーム</h2>
+                  <label>ラベル</label>
+                  <br />
+                  <input type="text" />
+                  <br />
+                  <label>ラベル</label>
+                  <br />
+                  <input type="text" />
+                  <br />
+                  <label>ラベル</label>
+                  <br />
+                  <input type="text" />
+                </section>
+              )}
+            {content.fieldId === "tables" && (
+              <section>
+                <h2>テーブルのフィールド</h2>
+                {parseHtml(content.tabelField)}
+              </section>
+            )}
+            {content.fieldId === "ctaList" &&
+              content.ctaList[0] === "satei-cta" && (
+                <section
+                  style={{
+                    border: "solid gray 5px",
+                    padding: "10px 20px",
+                    margin: "30px 0",
+                  }}
+                >
+                  <h2>査定のCTA</h2>
+                  <Image
+                    src={data.carInsurance.bgImage.url}
+                    height={300}
+                    width={400}
+                  />
+                </section>
+              )}
+            {content.fieldId === "faqField" && (
+              <section
+                style={{
+                  border: "solid orange 5px",
+                  padding: "0 20px",
+                  margin: "30px 0",
+                }}
+              >
+                <h2>{content.h2Title}</h2>
+                {parseHtml(content.FaqField)}
               </section>
             )}
           </>
