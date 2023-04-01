@@ -49,7 +49,7 @@ type Props = {
   data: any
 }
 
-const Home: NextPage<Props> = ({ data }) => {
+const Home: NextPage<Props> = ({ data }: Props) => {
   const { register, handleSubmit } = useForm<Form>({
     resolver: yupResolver(schema),
   });
