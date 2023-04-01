@@ -1,5 +1,5 @@
 import type { GetServerSideProps, NextPage } from "next";
-import { Fragment, createElement } from "react";
+import { Fragment, createElement, ReactNode } from "react";
 import Head from "next/head";
 import Image from "next/image";
 import * as yup from "yup";
@@ -47,6 +47,7 @@ type Form = yup.InferType<typeof schema>;
 
 type Props = {
   data: any
+  children: ReactNode
 }
 
 const Home: NextPage<Props> = ({ data }: Props) => {
