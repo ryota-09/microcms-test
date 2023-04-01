@@ -45,7 +45,11 @@ const schema = yup.object().shape({
 });
 type Form = yup.InferType<typeof schema>;
 
-const Home: NextPage = ({ data }) => {
+type Props = {
+  data: any
+}
+
+const Home: NextPage<Props> = ({ data }) => {
   const { register, handleSubmit } = useForm<Form>({
     resolver: yupResolver(schema),
   });
