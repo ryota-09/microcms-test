@@ -1,4 +1,4 @@
-import type { GetServerSideProps, NextPage } from "next";
+import type {  GetStaticProps, NextPage } from "next";
 import { Fragment, createElement, ReactNode } from "react";
 import Head from "next/head";
 import Image from "next/image";
@@ -68,6 +68,8 @@ const Home: NextPage<Props> = ({ data }: Props) => {
       <main className={styles.main}>
         <section style={{ border: "solid blue 5px", padding: "0 20px" }}>
           <h1>{data.title}</h1>
+          <p>updatedAt:</p>
+          <p>{data.updatedAt}</p>
         </section>
         <h2>↓ ここから下が繰り返しフィールド</h2>
         {/* ↓ 繰り返しフィールドのコンテンツ */}
@@ -186,7 +188,7 @@ const Home: NextPage<Props> = ({ data }: Props) => {
 
 export default Home;
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getStaticProps: GetStaticProps = async () => {
   const data = await getList();
   return { props: { data: data } };
 };
