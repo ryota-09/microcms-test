@@ -10,7 +10,7 @@ jobs:
       NEXT_PUBLIC_MICROCMS_API_KEY: ${{ secrets.NEXT_PUBLIC_MICROCMS_API_KEY }}
       PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
       ORG_ID: ${{ secrets.NEXT_PUBLIC_ORG_ID }}
-      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKENs }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
