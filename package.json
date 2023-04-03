@@ -17,6 +17,7 @@
     "react-hook-form": "^7.43.5",
     "rehype-parse": "^8.0.4",
     "rehype-react": "^7.1.2",
+    "vercel": "^28.18.3",
     "yup": "^1.0.2"
   },
   "devDependencies": {
