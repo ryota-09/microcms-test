@@ -14,6 +14,5 @@ jobs:
     - env: 
         NEXT_PUBLIC_MICROCMS_SERVICE_DOMAIN: ${{ env.NEXT_PUBLIC_MICROCMS_SERVICE_DOMAIN }}
         NEXT_PUBLIC_MICROCMS_API_KEY: ${{ env.NEXT_PUBLIC_MICROCMS_API_KEY }}
-    - run: echo ${{ env.NEXT_PUBLIC_MICROCMS_SERVICE_DOMAIN }}
     - run: yarn build
     - run: yarn deploy
