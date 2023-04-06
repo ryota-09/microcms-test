@@ -18,6 +18,7 @@ jobs:
           node-version: 16.x
       - run: yarn
       - run: yarn build
+      - run: echo ${{ secrets.VERCEL_TOKEN }}
       - uses: amondnet/vercel-action@v20
         with:
           # GitHub Actions の Secrets で作成した値を参照する形で
